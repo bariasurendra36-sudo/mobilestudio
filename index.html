@@ -98,6 +98,18 @@
             opacity: 0.6; 
         }
 
+        #reel-container:fullscreen {
+            border: none;
+            border-radius: 0;
+            background: #000;
+        }
+        
+        #reel-container:-webkit-full-screen {
+            border: none;
+            border-radius: 0;
+            background: #000;
+        }
+
         .progress-bar {
             position: absolute;
             top: 0;
@@ -190,10 +202,15 @@
                     <div id="dynamic-content" class="absolute inset-0 z-10 w-full h-full"></div>
                 </div>
 
-                <button id="previewBtn" class="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-xl font-black text-sm uppercase tracking-widest transition-transform active:scale-95 shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
-                    Replay Animation
-                </button>
+                <div class="flex gap-3 w-full mt-6">
+                    <button id="previewBtn" class="flex-[2] bg-blue-600 hover:bg-blue-500 text-white p-4 rounded-xl font-black text-sm uppercase tracking-widest transition-transform active:scale-95 shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                        Replay
+                    </button>
+                    <button id="fullscreenBtn" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white p-4 rounded-xl font-black text-sm uppercase tracking-widest transition-transform active:scale-95 shadow-lg shadow-slate-900/50 flex items-center justify-center gap-2" title="Toggle Fullscreen">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                    </button>
+                </div>
             </div>
 
         </main>
@@ -419,8 +436,27 @@ window.runReelAnimation = function(duration) {
         // --- 4. PLAYBACK ENGINE ---
         const previewBtn = document.getElementById('previewBtn');
         const pBar = document.getElementById('pBar');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
 
         previewBtn.onclick = () => startSequence();
+
+        // Fullscreen Toggle Logic
+        fullscreenBtn.onclick = () => {
+            const container = document.getElementById('reel-container');
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) { /* Safari */
+                    container.webkitRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                }
+            }
+        };
 
         function startSequence() {
             gsap.killTweensOf("*");
